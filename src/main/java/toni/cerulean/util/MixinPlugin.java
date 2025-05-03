@@ -1,0 +1,59 @@
+package toni.cerulean.util;
+
+import com.google.common.collect.ImmutableMap;
+import org.objectweb.asm.tree.ClassNode;
+import org.spongepowered.asm.mixin.extensibility.IMixinConfigPlugin;
+import org.spongepowered.asm.mixin.extensibility.IMixinInfo;
+import toni.cerulean.Common;
+
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
+/**
+ * This plugin disables loading specific mixins based on settings in config file.
+ */
+public class MixinPlugin implements IMixinConfigPlugin {
+
+    private static final Map<String, Boolean> CONDITIONS = ImmutableMap.of(
+            "toni.cerulean.mixin.AbstractContainerMenuMixin", Common.config.INITIALIZE_INVENTORY_LAST_SLOTS,
+            "toni.cerulean.mixin.InventoryChangeTriggerInstanceMixin", Common.config.OPTIMIZE_MULTIPLE_PREDICATE_TRIGGER
+                    || Common.config.CHECK_COUNT_BEFORE_ITEM_PREDICATE_MATCH,
+            "toni.cerulean.mixin.InventoryChangeTriggerMixin", Common.config.IGNORE_TRIGGERS_FOR_EMPTIED_STACKS
+                    || Common.config.IGNORE_TRIGGERS_FOR_DECREASED_STACKS
+                    || Common.config.OPTIMIZE_TRIGGERS_FOR_INCREASED_STACKS,
+            "toni.cerulean.mixin.ItemStackMixin", Common.config.IGNORE_TRIGGERS_FOR_DECREASED_STACKS
+                    || Common.config.OPTIMIZE_TRIGGERS_FOR_INCREASED_STACKS,
+            "toni.cerulean.mixin.AbstractContainerMenuMixinPlatform", Common.config.IGNORE_TRIGGERS_FOR_DECREASED_STACKS,
+            "toni.cerulean.mixin.ItemPredicateMixin", Common.config.CHECK_COUNT_BEFORE_ITEM_PREDICATE_MATCH
+    );
+
+    @Override
+    public void onLoad(String mixinPackage) {}
+
+    @Override
+    public String getRefMapperConfig() {
+        return null;
+    }
+
+    @Override
+    public boolean shouldApplyMixin(String targetClassName, String mixinClassName) {
+        boolean status = CONDITIONS.getOrDefault(mixinClassName, true);
+        LogHelper.debug(() -> "Apply mixin %s: %s".formatted(mixinClassName, status));
+        return status;
+    }
+
+    @Override
+    public void acceptTargets(Set<String> myTargets, Set<String> otherTargets) {}
+
+    @Override
+    public List<String> getMixins() {
+        return null;
+    }
+
+    @Override
+    public void postApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
+
+    @Override
+    public void preApply(String targetClassName, ClassNode targetClass, String mixinClassName, IMixinInfo mixinInfo) {}
+}
