@@ -5,10 +5,9 @@ plugins {
 blahaj {
 	config {
 		// yarn()
-		// versionedAccessWideners()
+		versionedAccessWideners()
 	}
 	setup {
-		txnilib("1.0.23")
 		forgeConfig()
 
 		if (mod.isForge)
