@@ -1,7 +1,7 @@
 package toni.cerulean.foundation;
 
 
-import net.minecraft.resources.ResourceLocation;
+import net.minecraft.resources.Identifier;
 import toni.cerulean.impl.ReloadListenerHandlerBase;
 import toni.lib.utils.VersionUtils;
 
@@ -15,7 +15,7 @@ import net.minecraftforge.eventbus.api.SubscribeEvent;
 public class ReloadListenerHandler extends ReloadListenerHandlerBase #if fabric implements IdentifiableResourceReloadListener #endif {
     #if fabric
     @Override
-    public ResourceLocation getFabricId() {
+    public Identifier getFabricId() {
         return VersionUtils.resource("cerulean");
     }
 

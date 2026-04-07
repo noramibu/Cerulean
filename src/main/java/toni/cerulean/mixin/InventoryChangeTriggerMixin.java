@@ -3,11 +3,11 @@ package toni.cerulean.mixin;
 import net.minecraft.server.packs.resources.ResourceManager;
 import net.minecraft.util.profiling.ProfilerFiller;
 import org.spongepowered.asm.mixin.Unique;
-import toni.cerulean.Common;
+import toni.cerulean.foundation.config.RuntimeOptions;
 import toni.cerulean.iface.IItemStackMixin;
 import toni.cerulean.impl.StackSizeThresholdManager;
 import toni.cerulean.util.LogHelper;
-import net.minecraft.advancements.critereon.InventoryChangeTrigger;
+import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
@@ -35,7 +35,7 @@ abstract class InventoryChangeTriggerMixin {
     @Inject(method = "trigger(Lnet/minecraft/server/level/ServerPlayer;Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;)V", at = @At(value = "HEAD"), cancellable = true)
     public void trigger(ServerPlayer serverPlayer, Inventory inventory, ItemStack itemStack, CallbackInfo ci) {
         var skipTickMap = cerulean$skipTicks.computeIfAbsent(serverPlayer.getUUID(), k -> new HashMap<>());
-        if (Common.config.ENABLE_SKIP_TICKS)
+        if (RuntimeOptions.enableSkipTicks())
         {
             var itemName = itemStack.getItem().toString();
             var skipTicks = skipTickMap.getOrDefault(itemName, 5);
@@ -50,10 +50,10 @@ abstract class InventoryChangeTriggerMixin {
             skipTickMap.put(itemName, 0);
         }
 
-        if ((itemStack.isEmpty() && Common.config.IGNORE_TRIGGERS_FOR_EMPTIED_STACKS)
-                || (Common.config.IGNORE_TRIGGERS_FOR_DECREASED_STACKS
+        if ((itemStack.isEmpty() && RuntimeOptions.ignoreTriggersForEmptiedStacks())
+                || (RuntimeOptions.ignoreTriggersForDecreasedStacks()
                     && itemStack.getCount() < ((IItemStackMixin) (Object) itemStack).cerulean$getPreviousStackSize())
-                || (Common.config.OPTIMIZE_TRIGGERS_FOR_INCREASED_STACKS
+                || (RuntimeOptions.optimizeTriggersForIncreasedStacks()
                     && !StackSizeThresholdManager.doesStackPassThreshold(itemStack))) {
             ci.cancel();
             LogHelper.debug(() -> "InventoryChangeTrigger cancelled for %s".formatted(itemStack));
