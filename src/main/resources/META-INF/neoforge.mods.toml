@@ -3,16 +3,16 @@ loaderVersion="[1,)"
 license="${license}"
 showAsResourcePack=false
 
-issueTrackerURL = "https://github.com/${github}/${name}/issues"
+issueTrackerURL = "https://github.com/noramibu/Cerulean/issues"
 
 [[mods]]
 modId="${id}"
 version="${modversion}"
 displayName="${display_name}"
-authors="${author}"
+authors="noramibu, Toni, Mephodio"
 description="${description}"
 logoFile="assets/${namespace}/textures/mod_logo.png"
-displayURL = "https://github.com/${github}/${name}/"
+displayURL = "https://github.com/noramibu/Cerulean/branches"
 
 [[mixins]]
 config = "mixins.${mixinid}.json"
@@ -20,7 +20,7 @@ config = "mixins.${mixinid}.json"
 [[dependencies."${id}"]]
 modId="minecraft"
 mandatory=true
-versionRange="${mc}"
+versionRange="[1.21.9,)"
 ordering="NONE"
 side="BOTH"
 
