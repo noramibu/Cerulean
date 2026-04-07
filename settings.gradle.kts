@@ -22,7 +22,7 @@ plugins {
 
 blahaj {
 	init(rootProject) {
-        mc("1.21.11", "fabric", "neoforge")
+        mc("26.1", "fabric", "neoforge")
 	}
 }
 
