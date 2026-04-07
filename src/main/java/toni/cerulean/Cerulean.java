@@ -1,5 +1,6 @@
 package toni.cerulean;
 
+import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.level.block.Blocks;
 import toni.cerulean.foundation.config.AllConfigs;
 import org.apache.logging.log4j.LogManager;
@@ -12,15 +13,6 @@ import toni.cerulean.impl.ReloadListenerHandlerBase;
     import net.fabricmc.api.ModInitializer;
     import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
     import net.minecraft.server.packs.PackType;
-    #if after_21_1
-    import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.NeoForgeConfigRegistry;
-    import fuzs.forgeconfigapiport.fabric.api.neoforge.v4.client.ConfigScreenFactoryRegistry;
-    import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-    #endif
-
-    #if current_20_1
-    import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
-    #endif
 #endif
 
 #if FORGE
@@ -44,7 +36,7 @@ import net.neoforged.fml.common.EventBusSubscriber;
 import net.neoforged.neoforge.client.gui.IConfigScreenFactory;
 import net.neoforged.neoforge.client.gui.ConfigurationScreen;
 import net.neoforged.neoforge.common.NeoForge;
-import net.neoforged.neoforge.event.AddReloadListenerEvent;
+import net.neoforged.neoforge.event.AddServerReloadListenersEvent;
 #endif
 
 
@@ -82,7 +74,7 @@ public class Cerulean #if FABRIC implements ModInitializer, ClientModInitializer
         #endif
 
         #if NEO
-        NeoForge.EVENT_BUS.addListener((AddReloadListenerEvent event) -> event.addListener(new ReloadListenerHandlerBase()));
+        NeoForge.EVENT_BUS.addListener((AddServerReloadListenersEvent event) -> event.addListener(ResourceLocation.fromNamespaceAndPath(Cerulean.ID, "reload_listener"), new ReloadListenerHandlerBase()));
         #endif
     }
 
@@ -91,23 +83,13 @@ public class Cerulean #if FABRIC implements ModInitializer, ClientModInitializer
     public void onInitialize() {
         #if FABRIC
             ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerHandler());
-            AllConfigs.register((type, spec) -> {
-                #if AFTER_21_1
-                NeoForgeConfigRegistry.INSTANCE.register(Cerulean.ID, type, spec);
-                #else
-                ForgeConfigRegistry.INSTANCE.register(Cerulean.ID, type, spec);
-                #endif
-            });
+            // Keep config objects initialized without requiring ForgeConfigAPIPort on Fabric.
+            AllConfigs.register((type, spec) -> {});
         #endif
     }
 
     #if FABRIC @Override #endif
     public void onInitializeClient() {
-        #if AFTER_21_1
-            #if FABRIC
-            ConfigScreenFactoryRegistry.INSTANCE.register(Cerulean.ID, ConfigurationScreen::new);
-            #endif
-        #endif
     }
 
     // Forg event stubs to call the Fabric initialize methods, and set up cloth config screen
