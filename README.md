@@ -1,4 +1,13 @@
-# TxniTemplate
-This is a Minecraft mod template set up with the [Blahaj Gradle Plugin](https://github.com/txnimc/blahaj) for automated multiversion dev. 
+# Cerulean
 
-You can [read the docs here](https://blahaj.txni.dev/).
+Cerulean is an advancement optimization mod.
+
+This branch targets Minecraft `26.1` and builds both `fabric` and `neoforge` from one codebase using direct Loom no-remap configuration.
+
+Build commands:
+
+```powershell
+.\gradlew.bat buildAll
+.\gradlew.bat build "-Ploom.platform=fabric"
+.\gradlew.bat build "-Ploom.platform=neoforge"
+```

@@ -2,6 +2,7 @@ package toni.cerulean.mixin;
 
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;
 import org.spongepowered.asm.mixin.Mixin;
@@ -18,7 +19,10 @@ public abstract class ItemPredicateMixin implements IItemPredicateMixin {
     @Shadow
     private MinMaxBounds.Ints count;
 
-    #if mc >= 211
+    #if mc >= 261
+    @Shadow
+    public abstract boolean test(ItemInstance itemStack);
+    #elif mc >= 211
     @Shadow
     public abstract boolean test(ItemStack itemStack);
     #else

@@ -4,6 +4,7 @@ import com.llamalad7.mixinextras.sugar.Local;
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -58,16 +59,23 @@ abstract class InventoryChangeTriggerInstanceMixin {
     /**
      * Use optimized itemPredicate match
      */
-    #if mc >= 211
+    #if mc >= 261
+    @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/criterion/ItemPredicate;test(Lnet/minecraft/world/item/ItemInstance;)Z"))
+    #elif mc >= 211
     @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/criterion/ItemPredicate;test(Lnet/minecraft/world/item/ItemStack;)Z"))
     #else
     @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/ItemPredicate;matches(Lnet/minecraft/world/item/ItemStack;)Z"))
     #endif
-    public boolean itemPredicateMatches(ItemPredicate itemPredicate, ItemStack itemStack) {
+    public boolean itemPredicateMatches(ItemPredicate itemPredicate, #if mc >= 261 ItemInstance itemInstance #else ItemStack itemStack #endif) {
         if (RuntimeOptions.checkCountBeforeItemPredicateMatch()) {
+            #if mc >= 261
+            ItemStack itemStack = (ItemStack) itemInstance;
+            #endif
             return ((IItemPredicateMixin) (Object) itemPredicate).cerulean$fasterMatches(itemStack);
         } else {
-            #if mc >= 211
+            #if mc >= 261
+            return itemPredicate.test(itemInstance);
+            #elif mc >= 211
             return itemPredicate.test(itemStack);
             #else
             return itemPredicate.matches(itemStack);
