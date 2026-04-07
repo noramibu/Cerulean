@@ -11,18 +11,18 @@ import java.util.concurrent.CompletableFuture;
 
 public class ConfigLangDatagen extends FabricLanguageProvider {
 
-    #if AFTER_21_1
-    protected ConfigLangDatagen(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
-        super(dataOutput, registryLookup);
-    }
-    #else
+    #if mc < 215
     protected ConfigLangDatagen(FabricDataOutput dataOutput) {
         super(dataOutput);
+    }
+    #else
+    protected ConfigLangDatagen(FabricDataOutput dataOutput, CompletableFuture<HolderLookup.Provider> registryLookup) {
+        super(dataOutput, registryLookup);
     }
     #endif
 
     @Override
-    public void generateTranslations(#if AFTER_21_1 HolderLookup.Provider registryLookup, #endif TranslationBuilder translationBuilder) {
+    public void generateTranslations(#if mc < 215 #else HolderLookup.Provider registryLookup, #endif TranslationBuilder translationBuilder) {
         AllConfigs.generateTranslations(translationBuilder);
     }
 

@@ -13,7 +13,7 @@ pluginManagement {
 }
 
 plugins {
-	id("dev.architectury.loom") version "1.10-SNAPSHOT" apply false
+	id("dev.architectury.loom") version "1.11-SNAPSHOT" apply false
 	kotlin("jvm") version "2.0.0" apply false
 	kotlin("plugin.serialization") version "2.0.0" apply false
 	id("toni.blahaj") version "2.0.17"
@@ -22,8 +22,7 @@ plugins {
 
 blahaj {
 	init(rootProject) {
-        mc("1.20.1", "fabric", "forge")
-        mc("1.21.1", "fabric", "neoforge")
+        mc("1.21.10", "fabric", "neoforge")
 	}
 }
 
