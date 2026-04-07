@@ -6,21 +6,43 @@ import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
 import net.minecraft.advancements.CriteriaTriggers;
 import net.minecraft.core.registries.BuiltInRegistries;
+import net.minecraft.resources.FileToIdConverter;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.server.packs.resources.ResourceManager;
-import net.minecraft.server.packs.resources.SimpleJsonResourceReloadListener;
+import net.minecraft.server.packs.resources.SimplePreparableReloadListener;
+import net.minecraft.util.GsonHelper;
 import net.minecraft.util.profiling.ProfilerFiller;
-import toni.cerulean.Common;
+import toni.cerulean.Cerulean;
+import toni.cerulean.foundation.config.RuntimeOptions;
 
+import java.io.IOException;
+import java.io.Reader;
+import java.util.HashMap;
 import java.util.Map;
 import java.util.Objects;
 
-public class ReloadListenerHandlerBase extends SimpleJsonResourceReloadListener {
+public class ReloadListenerHandlerBase extends SimplePreparableReloadListener<Map<ResourceLocation, JsonElement>> {
     private static final Gson GSON = (new GsonBuilder()).create();
     private static final String FOLDER = "advancements";
 
-    public ReloadListenerHandlerBase() {
-        super(GSON, FOLDER);
+    @Override
+    protected Map<ResourceLocation, JsonElement> prepare(ResourceManager resourceManager, ProfilerFiller profilerFiller) {
+        FileToIdConverter converter = FileToIdConverter.json(FOLDER);
+        Map<ResourceLocation, JsonElement> prepared = new HashMap<>();
+
+        for (Map.Entry<ResourceLocation, net.minecraft.server.packs.resources.Resource> entry : converter.listMatchingResources(resourceManager).entrySet()) {
+            ResourceLocation id = converter.fileToId(entry.getKey());
+            try (Reader reader = entry.getValue().openAsReader()) {
+                JsonElement parsed = GsonHelper.fromJson(GSON, reader, JsonElement.class);
+                if (parsed != null) {
+                    prepared.put(id, parsed);
+                }
+            } catch (IOException | RuntimeException e) {
+                Cerulean.LOGGER.error("Failed to parse advancement {}", id, e);
+            }
+        }
+
+        return prepared;
     }
 
     /**
@@ -33,7 +55,7 @@ public class ReloadListenerHandlerBase extends SimpleJsonResourceReloadListener 
      */
     @Override
     protected void apply(Map<ResourceLocation, JsonElement> object, ResourceManager resourceManager, ProfilerFiller profilerFiller) {
-        if (Common.config.OPTIMIZE_TRIGGERS_FOR_INCREASED_STACKS) {
+        if (RuntimeOptions.optimizeTriggersForIncreasedStacks()) {
             StackSizeThresholdManager.clear();
 
             #if mc >= 211

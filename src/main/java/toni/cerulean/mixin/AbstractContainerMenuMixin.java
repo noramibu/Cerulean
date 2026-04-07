@@ -11,6 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
+import toni.cerulean.foundation.config.RuntimeOptions;
 import toni.cerulean.util.ItemStackUtil;
 import toni.cerulean.util.LogHelper;
 
@@ -33,6 +34,11 @@ abstract class AbstractContainerMenuMixin {
     @Redirect(method = "addSlot(Lnet/minecraft/world/inventory/Slot;)Lnet/minecraft/world/inventory/Slot;",
             at = @At(value="INVOKE", target = "Lnet/minecraft/core/NonNullList;add(Ljava/lang/Object;)Z", ordinal = 1))
     protected boolean addSlot(NonNullList<ItemStack> lastSlots, Object emptyStack, Slot slot) {
+        if (!RuntimeOptions.initializeInventoryLastSlots()) {
+            lastSlots.add(ItemStack.EMPTY);
+            return true;
+        }
+
         if (slot.container instanceof Inventory && slot.hasItem()) {
             LogHelper.debug(() -> "Adding %s to lastSlots".formatted(slot.getItem()));
             lastSlots.add(slot.getItem());

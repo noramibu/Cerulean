@@ -2,6 +2,7 @@ package toni.cerulean.foundation.config;
 
 import java.util.EnumMap;
 import java.util.HashSet;
+import java.util.Locale;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
@@ -10,7 +11,6 @@ import java.util.function.Supplier;
 
 import toni.cerulean.Cerulean;
 import toni.lib.config.ConfigBase;
-import toni.lib.utils.PlatformUtils;
 import com.electronwill.nightconfig.core.UnmodifiableConfig;
 
 #if FABRIC
@@ -85,11 +85,9 @@ public class AllConfigs {
     }
 
     public static void register(BiConsumer<ModConfig.Type, #if after_21_1 ModConfigSpec #else ForgeConfigSpec #endif> registration) {
-        if (!PlatformUtils.isDedicatedServer())
-            client = register(CClient::new, ModConfig.Type.CLIENT);
-        
+        client = null;
         common = register(CCommon::new, ModConfig.Type.COMMON);
-        server = register(CServer::new, ModConfig.Type.SERVER);
+        server = null;
 
         for (Entry<ModConfig.Type, ConfigBase> pair : CONFIGS.entrySet())
             registration.accept(pair.getKey(), pair.getValue().specification);
@@ -108,12 +106,39 @@ public class AllConfigs {
     public static void addEntrySetTranslations(HashSet<String> existing, Set<? extends UnmodifiableConfig.Entry> config, FabricLanguageProvider.TranslationBuilder translationBuilder) {
         for (var entry : config) {
             if (existing.add(entry.getKey()))
-                translationBuilder.add(Cerulean.ID + ".configuration." + entry.getKey(), entry.getKey());
+                translationBuilder.add(Cerulean.ID + ".configuration." + entry.getKey(), humanizeConfigKey(entry.getKey()));
 
             if (entry.getValue() instanceof com.electronwill.nightconfig.core.AbstractConfig children) {
                 addEntrySetTranslations(existing, children.entrySet(), translationBuilder);
             }
         }
+    }
+
+    private static String humanizeConfigKey(String rawKey) {
+        String key = rawKey;
+        int separatorIndex = key.lastIndexOf('.');
+        if (separatorIndex >= 0 && separatorIndex + 1 < key.length()) {
+            key = key.substring(separatorIndex + 1);
+        }
+
+        StringBuilder builder = new StringBuilder();
+        for (String part : key.replace('-', '_').split("_")) {
+            if (part.isBlank()) {
+                continue;
+            }
+
+            if (!builder.isEmpty()) {
+                builder.append(' ');
+            }
+
+            String lower = part.toLowerCase(Locale.ROOT);
+            builder.append(Character.toUpperCase(lower.charAt(0)));
+            if (lower.length() > 1) {
+                builder.append(lower.substring(1));
+            }
+        }
+
+        return builder.isEmpty() ? rawKey : builder.toString();
     }
     #endif
 

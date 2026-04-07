@@ -11,7 +11,7 @@ import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.Redirect;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import org.spongepowered.asm.mixin.injection.callback.LocalCapture;
-import toni.cerulean.Common;
+import toni.cerulean.foundation.config.RuntimeOptions;
 import toni.cerulean.iface.IItemPredicateMixin;
 import toni.cerulean.util.LogHelper;
 
@@ -42,7 +42,7 @@ abstract class InventoryChangeTriggerInstanceMixin {
     public void matches(Inventory inventory, ItemStack itemStack, int full, int empty, int occupied, CallbackInfoReturnable<Boolean> cir, @Local List<ItemPredicate> predicatesList) {
     #endif
         // If no predicate in list matches the changed item, the trigger not matches
-        if (Common.config.OPTIMIZE_MULTIPLE_PREDICATE_TRIGGER &&
+        if (RuntimeOptions.optimizeMultiplePredicateTrigger() &&
             #if mc >= 211
             !predicatesList.removeIf(itemPredicate -> itemPredicate.test(itemStack))
             #else
@@ -64,7 +64,7 @@ abstract class InventoryChangeTriggerInstanceMixin {
     @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/critereon/ItemPredicate;matches(Lnet/minecraft/world/item/ItemStack;)Z"))
     #endif
     public boolean itemPredicateMatches(ItemPredicate itemPredicate, ItemStack itemStack) {
-        if (Common.config.CHECK_COUNT_BEFORE_ITEM_PREDICATE_MATCH) {
+        if (RuntimeOptions.checkCountBeforeItemPredicateMatch()) {
             return ((IItemPredicateMixin) (Object) itemPredicate).cerulean$fasterMatches(itemStack);
         } else {
             #if mc >= 211

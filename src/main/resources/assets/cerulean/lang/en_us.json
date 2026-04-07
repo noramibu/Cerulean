@@ -1,0 +1,11 @@
+{
+  "cerulean.configuration.common": "Common",
+  "cerulean.configuration.debug_mode": "Debug Mode",
+  "cerulean.configuration.enable_skip_ticks": "Enable Skip Ticks",
+  "cerulean.configuration.ignore_triggers_for_emptied_stacks": "Ignore Triggers For Emptied Stacks",
+  "cerulean.configuration.ignore_triggers_for_decreased_stacks": "Ignore Triggers For Decreased Stacks",
+  "cerulean.configuration.optimize_multiple_predicate_trigger": "Optimize Multiple Predicate Trigger",
+  "cerulean.configuration.initialize_inventory_last_slots": "Initialize Inventory Last Slots",
+  "cerulean.configuration.optimize_triggers_for_increased_stacks": "Optimize Triggers For Increased Stacks",
+  "cerulean.configuration.check_count_before_item_predicate_match": "Check Count Before Item Predicate Match"
+}
