@@ -5,11 +5,13 @@
 	"version": "${modversion}",
 	"description": "${description}",
 	"authors": [
-		"${author}"
+		"noramibu",
+		"Toni",
+		"Mephodio"
 	],
 	"contact": {
-		"sources": "https://github.com/${github}/${name}",
-		"issues": "https://github.com/${github}/${name}/issues"
+		"sources": "https://github.com/noramibu/Cerulean/branches",
+		"issues": "https://github.com/noramibu/Cerulean/issues"
 	},
 	"license": "${license}",
 	"icon": "assets/${id}/textures/mod_logo.png",
@@ -39,7 +41,7 @@
 	"depends": {
 		${depends}
 		"fabricloader": ">=0.15.0",
-		"minecraft": "${mc}",
+		"minecraft": "1.21.7",
 		"fabric-api": "*"
 	}
 }
