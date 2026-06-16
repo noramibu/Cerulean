@@ -7,7 +7,11 @@ import toni.cerulean.foundation.config.RuntimeOptions;
 import toni.cerulean.iface.IItemStackMixin;
 import toni.cerulean.impl.StackSizeThresholdManager;
 import toni.cerulean.util.LogHelper;
+#if mc >= 262
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+#else
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
+#endif
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;

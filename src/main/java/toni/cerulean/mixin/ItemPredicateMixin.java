@@ -1,7 +1,12 @@
 package toni.cerulean.mixin;
 
+#if mc >= 262
+import net.minecraft.advancements.predicates.ItemPredicate;
+import net.minecraft.advancements.predicates.MinMaxBounds;
+#else
 import net.minecraft.advancements.criterion.ItemPredicate;
 import net.minecraft.advancements.criterion.MinMaxBounds;
+#endif
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
 import org.spongepowered.asm.mixin.Final;

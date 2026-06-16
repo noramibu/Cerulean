@@ -20,7 +20,7 @@ config = "mixins.${mixinid}.json"
 [[dependencies."${id}"]]
 modId="minecraft"
 mandatory=true
-versionRange="[26.1,26.1.1]"
+versionRange="[26.2,26.3)"
 ordering="NONE"
 side="BOTH"
 

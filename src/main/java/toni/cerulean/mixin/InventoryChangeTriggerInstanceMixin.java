@@ -1,8 +1,13 @@
 package toni.cerulean.mixin;
 
 import com.llamalad7.mixinextras.sugar.Local;
+#if mc >= 262
+import net.minecraft.advancements.triggers.InventoryChangeTrigger;
+import net.minecraft.advancements.predicates.ItemPredicate;
+#else
 import net.minecraft.advancements.criterion.InventoryChangeTrigger;
 import net.minecraft.advancements.criterion.ItemPredicate;
+#endif
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemInstance;
 import net.minecraft.world.item.ItemStack;
@@ -59,7 +64,9 @@ abstract class InventoryChangeTriggerInstanceMixin {
     /**
      * Use optimized itemPredicate match
      */
-    #if mc >= 261
+    #if mc >= 262
+    @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/predicates/ItemPredicate;test(Lnet/minecraft/world/item/ItemInstance;)Z"))
+    #elif mc >= 261
     @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/criterion/ItemPredicate;test(Lnet/minecraft/world/item/ItemInstance;)Z"))
     #elif mc >= 211
     @Redirect(method = "matches(Lnet/minecraft/world/entity/player/Inventory;Lnet/minecraft/world/item/ItemStack;III)Z", at = @At(value = "INVOKE", target = "Lnet/minecraft/advancements/criterion/ItemPredicate;test(Lnet/minecraft/world/item/ItemStack;)Z"))

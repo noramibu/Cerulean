@@ -2,7 +2,7 @@
 
 Cerulean is an advancement optimization mod.
 
-This branch targets Minecraft `26.1` and builds both `fabric` and `neoforge` from one codebase using direct Loom no-remap configuration.
+This branch targets Minecraft `26.2` and builds both `fabric` and `neoforge` from one codebase using direct Loom no-remap configuration.
 
 Build commands:
 

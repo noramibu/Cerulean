@@ -3,11 +3,11 @@ import org.gradle.jvm.toolchain.JavaLanguageVersion
 
 plugins {
     java
-    id("dev.architectury.loom-no-remap") version "1.14.473"
+    id("dev.architectury.loom-no-remap") version "1.17-SNAPSHOT"
     id("systems.manifold.manifold-gradle-plugin") version "0.0.2-alpha"
 }
 
-val mcVersion = "26.1"
+val mcVersion = "26.2"
 val loader = (findProperty("loom.platform") as String?)?.lowercase() ?: "fabric"
 val isFabric = loader == "fabric"
 val isNeoForge = loader == "neoforge"
@@ -44,11 +44,11 @@ dependencies {
     minecraft("com.mojang:minecraft:$mcVersion")
 
     if (isFabric) {
-        implementation("net.fabricmc:fabric-loader:0.18.6")
-        implementation("net.fabricmc.fabric-api:fabric-api:0.145.1+26.1")
+        implementation("net.fabricmc:fabric-loader:0.19.3")
+        implementation("net.fabricmc.fabric-api:fabric-api:0.152.1+26.2")
         compileOnly("com.terraformersmc:modmenu:16.0.1")
     } else {
-        add("neoForge", "net.neoforged:neoforge:26.1.0.8-beta")
+        add("neoForge", "net.neoforged:neoforge:26.2.0.0-beta")
     }
 
     compileOnly("systems.manifold:manifold-preprocessor:2025.1.24")
@@ -81,8 +81,8 @@ val prepareLoaderSources = tasks.register("prepareLoaderSources") {
 
         val buildPropertiesFile = root.resolve("build.properties")
         val props = mutableListOf(
-            "MC=261",
-            "mc=261"
+            "MC=262",
+            "mc=262"
         )
 
         if (isFabric) {
@@ -149,7 +149,7 @@ val isWindows = System.getProperty("os.name").startsWith("Windows")
 
 tasks.register<Exec>("buildFabric") {
     group = "build"
-    description = "Build Cerulean for Fabric 26.1"
+    description = "Build Cerulean for Fabric 26.2"
     workingDir = rootDir
     if (isWindows) {
         commandLine("cmd", "/c", gradleWrapper, "build", "-Ploom.platform=fabric", "--no-daemon")
@@ -160,7 +160,7 @@ tasks.register<Exec>("buildFabric") {
 
 tasks.register<Exec>("buildNeoForge") {
     group = "build"
-    description = "Build Cerulean for NeoForge 26.1"
+    description = "Build Cerulean for NeoForge 26.2"
     workingDir = rootDir
     if (isWindows) {
         commandLine("cmd", "/c", gradleWrapper, "build", "-Ploom.platform=neoforge", "--no-daemon")
