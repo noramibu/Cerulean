@@ -59,6 +59,7 @@ public class AllConfigs {
 #if FABRIC
     private static <T extends ConfigBase> T register(Supplier<T> factory, String key) {
         T config = factory.get();
+        config.loadOrCreateToml(net.fabricmc.loader.api.FabricLoader.getInstance().getConfigDir().resolve("cerulean-" + key + ".toml"));
         CONFIGS.put(key, config);
         return config;
     }
