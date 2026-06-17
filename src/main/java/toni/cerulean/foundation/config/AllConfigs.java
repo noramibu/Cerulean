@@ -11,6 +11,7 @@ import java.util.function.Supplier;
 
 #if FABRIC
 import net.fabricmc.fabric.api.datagen.v1.provider.FabricLanguageProvider;
+import net.fabricmc.loader.api.FabricLoader;
 #else
     #if NEO
     import net.neoforged.fml.config.ModConfig;
@@ -59,6 +60,7 @@ public class AllConfigs {
 #if FABRIC
     private static <T extends ConfigBase> T register(Supplier<T> factory, String key) {
         T config = factory.get();
+        config.loadOrCreateToml(FabricLoader.getInstance().getConfigDir().resolve("cerulean-" + key + ".toml"));
         CONFIGS.put(key, config);
         return config;
     }
