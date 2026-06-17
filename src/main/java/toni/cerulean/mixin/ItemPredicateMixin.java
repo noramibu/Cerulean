@@ -15,11 +15,11 @@ import java.util.Optional;
 @Mixin(ItemPredicate.class)
 public abstract class ItemPredicateMixin implements IItemPredicateMixin {
     @Final
-    @Shadow
+    @Shadow(aliases = "comp_1785")
     private MinMaxBounds.Ints count;
 
     #if mc >= 211
-    @Shadow
+    @Shadow(aliases = "method_8970")
     public abstract boolean test(ItemStack itemStack);
     #else
     @Shadow
