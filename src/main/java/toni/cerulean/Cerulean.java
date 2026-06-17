@@ -13,15 +13,6 @@ import toni.cerulean.impl.ReloadListenerHandlerBase;
     import net.fabricmc.api.ModInitializer;
     import net.fabricmc.fabric.api.resource.ResourceManagerHelper;
     import net.minecraft.server.packs.PackType;
-    #if after_21_1
-    import fuzs.forgeconfigapiport.fabric.api.v5.ConfigRegistry;
-    import fuzs.forgeconfigapiport.fabric.api.v5.client.ConfigScreenFactoryRegistry;
-    import net.neoforged.neoforge.client.gui.ConfigurationScreen;
-    #endif
-
-    #if current_20_1
-    import fuzs.forgeconfigapiport.api.config.v2.ForgeConfigRegistry;
-    #endif
 #endif
 
 #if FORGE
@@ -92,23 +83,13 @@ public class Cerulean #if FABRIC implements ModInitializer, ClientModInitializer
     public void onInitialize() {
         #if FABRIC
             ResourceManagerHelper.get(PackType.SERVER_DATA).registerReloadListener(new ReloadListenerHandler());
-            AllConfigs.register((type, spec) -> {
-                #if AFTER_21_1
-                ConfigRegistry.INSTANCE.register(Cerulean.ID, type, spec);
-                #else
-                ForgeConfigRegistry.INSTANCE.register(Cerulean.ID, type, spec);
-                #endif
-            });
+            // Keep config objects initialized without requiring ForgeConfigAPIPort on Fabric.
+            AllConfigs.register((type, spec) -> {});
         #endif
     }
 
     #if FABRIC @Override #endif
     public void onInitializeClient() {
-        #if AFTER_21_1
-            #if FABRIC
-            ConfigScreenFactoryRegistry.INSTANCE.register(Cerulean.ID, ConfigurationScreen::new);
-            #endif
-        #endif
     }
 
     // Forg event stubs to call the Fabric initialize methods, and set up cloth config screen
