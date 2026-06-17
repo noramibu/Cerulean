@@ -22,9 +22,6 @@
 		],
 		"client": [
 			"${group}.${namespace}.${name}"
-		],
-		"fabric-datagen": [
-			"${group}.${namespace}.foundation.data.${name}Datagen"
 		]
 	},
 	"mixins": [
@@ -37,7 +34,6 @@
 			}
 		}
 	},
-	"accessWidener": "${id}.accesswidener",
 	"depends": {
 		${depends}
 		"fabricloader": ">=0.15.0",
